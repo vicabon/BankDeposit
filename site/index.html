@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="台灣新台幣高利／優利定存官方資料比較">
+  <title>新台幣高利／優利定存比較</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <p class="eyebrow">官方資料比較工具</p>
+      <h1>新台幣高利／優利定存方案</h1>
+      <p>僅呈現已完成官方資料校對、且可確認目前承作的方案。</p>
+    </header>
+    <section class="notice" id="dataNotice" aria-live="polite">正在讀取資料…</section>
+    <section class="summary" id="summary"></section>
+    <section>
+      <div class="section-heading"><h2>方案比較</h2><button id="reload" type="button">重新載入資料</button></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>銀行</th><th>方案</th><th>年利率</th><th>天期</th><th>額度</th><th>領息方式</th><th>官方資料</th></tr></thead>
+          <tbody id="plans"><tr><td colspan="7">資料載入中…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <h2>各銀行資料狀態</h2>
+      <div class="bank-grid" id="banks"></div>
+    </section>
+    <footer>資料基準時間：<span id="generatedAt">官方資料未載明</span>。本頁不會直接搜尋銀行網站；請以銀行官方網站及實際申辦畫面為準。</footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

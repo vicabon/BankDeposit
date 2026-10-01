@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>台灣銀行新台幣高利／優利定存自動更新研究方案</title>
+  <style>
+    :root { --ink:#182230; --muted:#5d6b7c; --blue:#145da0; --cyan:#eaf5ff; --line:#d9e2ec; --good:#087443; --warn:#9a5b00; --bg:#f5f8fb; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--bg); font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif; line-height:1.7; }
+    main { max-width:1120px; margin:auto; padding:28px 18px 60px; }
+    header { padding:34px 30px; color:white; border-radius:20px; background:linear-gradient(135deg,#104d83,#1686a8); box-shadow:0 10px 28px #123b5220; }
+    h1 { margin:0 0 8px; font-size:clamp(1.65rem,4vw,2.55rem); line-height:1.3; }
+    h2 { margin:34px 0 12px; font-size:1.45rem; }
+    h3 { margin:22px 0 8px; font-size:1.08rem; color:var(--blue); }
+    p { margin:8px 0 14px; }
+    .lead { font-size:1.08rem; }
+    .meta { color:#d9f3ff; font-size:.95rem; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin:18px 0; }
+    .card { background:white; border:1px solid var(--line); border-radius:14px; padding:18px; box-shadow:0 3px 12px #20384a0b; }
+    .card strong { display:block; font-size:1.1rem; margin-bottom:5px; }
+    .good { color:var(--good); } .warn { color:var(--warn); }
+    table { width:100%; border-collapse:collapse; background:white; border:1px solid var(--line); border-radius:12px; overflow:hidden; display:block; overflow-x:auto; }
+    th,td { min-width:150px; padding:11px 13px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:white; background:#23618c; white-space:nowrap; }
+    tr:last-child td { border-bottom:0; }
+    code { padding:2px 5px; border-radius:5px; background:#edf2f7; color:#173d60; }
+    pre { padding:16px; color:#e8f4ff; background:#142333; border-radius:12px; overflow:auto; }
+    .note { padding:14px 16px; border-left:4px solid #2784bd; background:var(--cyan); border-radius:8px; }
+    ul,ol { padding-left:1.4rem; }
+    a { color:var(--blue); }
+    footer { margin-top:34px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:.9rem; }
+    @media (max-width:600px) { main { padding:14px 10px 40px; } header { padding:24px 20px; border-radius:14px; } .card { padding:15px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>新台幣高利／優利定存自動更新研究方案</h1>
+    <p class="lead">GitHub Pages、Python、CSS 與 JavaScript 的可行性評估</p>
+    <p class="meta">研究結果整理日期：2026/10/01　｜　時區：Asia/Taipei　｜　本文件：方案規劃，尚未實作</p>
+  </header>
+
+  <h2>一、結論</h2>
+  <div class="note"><strong>可行，但不建議讓每位訪客的瀏覽器直接搜尋五家銀行官網。</strong><br>
+    最穩定的架構是：Python 負責搜尋、擷取、解析與官方資料交叉驗證；GitHub Actions 負責定時或手動執行；GitHub Pages 負責發布最新的靜態 HTML、JSON 與圖表。</div>
+
+  <div class="grid">
+    <div class="card"><strong class="good">高可行性</strong>GitHub Pages 顯示 HTML、CSS、JavaScript、JSON、比較表、圖表與官方連結。</div>
+    <div class="card"><strong class="good">中高可行性</strong>GitHub Actions 執行 Python，產生報告並自動部署。</div>
+    <div class="card"><strong class="warn">低可行性</strong>純 GitHub Pages 在每次開啟頁面時直接爬取銀行官網，或由前端按鈕安全啟動 Python。</div>
+  </div>
+
+  <h2>二、三種更新方式比較</h2>
+  <table>
+    <thead><tr><th>方式</th><th>流程</th><th>優點</th><th>限制</th><th>評估</th></tr></thead>
+    <tbody>
+      <tr><td>重新載入最新資料</td><td>JavaScript 讀取 <code>latest.json</code></td><td>簡單、安全、適合靜態網站</td><td>不會重新搜尋銀行網站</td><td class="good">推薦作為頁面功能</td></tr>
+      <tr><td>GitHub Actions 手動／定時更新</td><td>Python 搜尋 → 產生 JSON／HTML → GitHub Pages 部署</td><td>可處理 PDF、動態頁面與驗證邏輯</td><td>不是訪客按鈕後即時完成；排程有延遲可能</td><td class="good">最推薦</td></tr>
+      <tr><td>外部後端 API</td><td>頁面按鈕 → Cloudflare Worker／Render 等後端 → Python 更新</td><td>可提供真正的更新按鈕</td><td>需維護額外服務、金鑰、權限與成本</td><td>需要即時更新時採用</td></tr>
+    </tbody>
+  </table>
+
+  <h2>三、推薦資料流程</h2>
+  <pre>銀行官方活動頁、公告、利率表、活動辦法、PDF
+                 ↓
+        Python 擷取與解析
+                 ↓
+           資料正規化
+                 ↓
+       官方來源交叉驗證
+                 ↓
+          方案篩選規則
+                 ↓
+ latest.json／歷史快照／HTML／圖表資料
+                 ↓
+           GitHub Pages 發布</pre>
+
+  <h2>四、研究範圍與篩選規則</h2>
+  <p>指定銀行為 LINE Bank、樂天國際銀行、將來銀行、王道銀行及匯豐銀行。每次以台灣時間判斷「今日」狀態，並優先使用銀行官方活動頁、活動辦法、公告、利率表、FAQ 及公開的官方 PDF。</p>
+  <ol>
+    <li>限新客戶、限新戶、限新開戶或首次開戶者，不列入主要比較表。</li>
+    <li>活動尚未開始、已結束、已取消、停止受理或官方公告額滿者，不列入。</li>
+    <li>官方無法確認目前仍可承作，或只有第三方資料而無官方佐證者，不列入。</li>
+    <li>新資金不等同新客戶；若官方未限制新舊戶，可保留並明確註明新資金條件。</li>
+    <li>官方未載明的利率、額度、領息方式或資格，標示「官方資料未載明」，不得推測。</li>
+  </ol>
+
+  <h2>五、建議資料欄位</h2>
+  <table>
+    <thead><tr><th>分類</th><th>欄位</th></tr></thead>
+    <tbody>
+      <tr><td>方案</td><td>銀行、官方方案名稱、幣別、定存天期、年利率、基本利率、優惠利率、最高利率</td></tr>
+      <tr><td>額度</td><td>最低承作金額、最高承作金額、優惠額度、超額部分利率或規則</td></tr>
+      <tr><td>資格</td><td>承作條件、是否限新戶、是否限新開戶、新資金條件、其他限制</td></tr>
+      <tr><td>利息</td><td>每月領息、到期領息、到期本息一次給付或官方未明確載明；提前解約規則</td></tr>
+      <tr><td>狀態</td><td>開始日、截止日、今日狀態、取消／額滿證據、資料檢查時間</td></tr>
+      <tr><td>來源</td><td>官方活動頁、官方辦法、官方公告、官方利率表及各欄位證據連結</td></tr>
+    </tbody>
+  </table>
+
+  <h2>六、HTML 顯示設計</h2>
+  <div class="grid">
+    <div class="card"><strong>頁首</strong>標題、資料基準日、台灣時間、最後更新時間。</div>
+    <div class="card"><strong>狀態提示</strong>今日可承作方案數、各銀行更新狀態、資料是否過期。</div>
+    <div class="card"><strong>比較圖</strong>以卡片、條形圖或 SVG 呈現銀行、利率、天期、優惠額度與領息方式。</div>
+    <div class="card"><strong>完整表格</strong>桌面版表格；手機版採水平捲動或方案卡片。</div>
+    <div class="card"><strong>詳細方案</strong>依五家銀行分區，列出完整條件與證據連結。</div>
+    <div class="card"><strong>資料限制</strong>明確顯示官方未載明、無法取得或需要人工複核的項目。</div>
+  </div>
+  <p>圖表應由同一份 JSON 產生，避免圖表與文字表格內容不一致。若採用 JavaScript 繪製 SVG，可減少外部圖片依賴；若產生 PNG，則必須同步更新並顯示資料日期。</p>
+
+  <h2>七、官方資料驗證風險</h2>
+  <ul>
+    <li>銀行網頁可能使用跨來源限制、動態載入、反爬蟲或驗證碼。</li>
+    <li>活動資訊可能位於 PDF，且可能是掃描影像，無法穩定自動解析。</li>
+    <li>利率頁、活動頁與活動辦法可能不同步。</li>
+    <li>「額度已滿」可能沒有公開公告，程式不能把未找到公告解讀成尚未額滿。</li>
+    <li>登入後或 App 內才看得到的資訊，不能假設公開爬蟲可以取得。</li>
+  </ul>
+  <p class="note">建議狀態至少分為：可納入、已結束、已取消、已額滿、官方未明確載明、無法取得官方資料、需要人工複核。只有「可納入」才進入主要比較表。</p>
+
+  <h2>八、README.md 待修正項目</h2>
+  <ol>
+    <li>流程摘要仍寫「搜尋四家銀行」，應統一為五家。</li>
+    <li>補充「開啟頁面重新載入資料」與「真正重新搜尋」的差異。</li>
+    <li>規範資料最後檢查時間、資料過期提示及失敗時的顯示方式。</li>
+    <li>為每個重要欄位保存官方證據連結，而非只保存單一方案網址。</li>
+    <li>明確定義官方未公告額滿時的狀態，不得視為已確認尚可承作。</li>
+    <li>釐清「寄送至指定 html」是部署到 GitHub Pages、下載檔案或其他用途。</li>
+  </ol>
+
+  <h2>九、建議採用方案</h2>
+  <p><strong>第一階段：</strong>Python＋GitHub Actions 每日自動搜尋與產生 <code>latest.json</code>、HTML、歷史快照及更新紀錄。</p>
+  <p><strong>第二階段：</strong>GitHub Pages 以 JavaScript 讀取 JSON，提供篩選、排序、響應式表格、比較圖與官方連結。</p>
+  <p><strong>第三階段：</strong>若確實需要訪客按鈕觸發搜尋，再增加受控的外部後端 API；不要把 GitHub Token 或銀行爬取邏輯放在公開前端。</p>
+  <p class="note"><strong>重要限制：</strong>即使完成自動化，頁面仍應提醒使用者以銀行官方網站及實際申辦畫面為準；自動化結果代表最近一次成功檢查，不等同銀行即時承作保證。</p>
+
+  <h2>十、更新行為的精確定義</h2>
+  <table>
+    <thead><tr><th>使用者操作</th><th>實際效果</th><th>是否重新搜尋銀行官網</th></tr></thead>
+    <tbody>
+      <tr><td>開啟 HTML</td><td>讀取最近一次成功發布的資料版本</td><td>否；純 GitHub Pages 無法直接執行 Python</td></tr>
+      <tr><td>按「重新載入資料」</td><td>重新讀取已發布的 JSON／HTML</td><td>否</td></tr>
+      <tr><td>管理者手動執行 Actions</td><td>執行 Python 搜尋、校對並發布新版本</td><td>是</td></tr>
+      <tr><td>訪客按「要求更新」</td><td>呼叫受控 API，取得工作編號，等待非同步更新完成</td><td>可行，但需外部後端；不保證立即完成</td></tr>
+    </tbody>
+  </table>
+  <p>若採用外部 API，應顯示「排隊中、搜尋中、校對中、發布中、完成、失敗」等狀態，並設定冷卻時間或合併重複請求，避免每位訪客同時建立新的搜尋工作。</p>
+
+  <h2>十一、資料不足與更新失敗的硬性規則</h2>
+  <ul>
+    <li>只搜尋並顯示新台幣定期存款或定期儲蓄存款；外幣定存、高利活存不得混入。</li>
+    <li>同一家銀行的所有符合條件方案、不同天期及不同領息選項均須保留，不得只選最高利率。</li>
+    <li>無法確認既有客戶可參加、目前仍受理或必要額度狀態時，不納入主要結果。</li>
+    <li>領息方式或提前解約規則未載明時，可保留其他必要條件均已確認的方案，但必須標示「官方資料未載明」。</li>
+    <li>利率或天期缺漏時，不得列入利率排名，也不得以零值代替。</li>
+    <li>官方來源互相矛盾且無法判定適用版本時，列為「需要人工複核」，不納入主要結果。</li>
+    <li>某家銀行更新失敗時，不得把舊資料標示為「今日已確認」，也不得把抓取失敗顯示成「今日沒有符合方案」。</li>
+  </ul>
+  <p>每家銀行應分別記錄「最近嘗試時間」、「最近成功校對時間」、「資料版本」及「結果狀態」。只有成功完成當日官方校對，才可標示為今日已確認。</p>
+
+  <h2>十二、GPT-6-Astra 評估紀錄</h2>
+  <div class="note">
+    <strong>評估結果：技術方向正確，可作為規劃初稿；修正後才適合作為實作規格。</strong><br>
+    GPT-6-Astra 審閱了本文件與 README.md，確認沒有誤稱已取得銀行目前利率、活動或額度資料；同時指出必須補充更新行為、資料不足、更新失敗、完整方案範圍及證據紀錄規則。
+  </div>
+  <p>本版本已依評估意見補充：</p>
+  <ul>
+    <li>明確區分開啟頁面、重新載入資料、Actions 更新及外部 API 更新。</li>
+    <li>明定資格、承作狀態、利率與天期資料不足時的不同處理方式。</li>
+    <li>明定更新失敗不得沿用舊資料冒充今日已確認。</li>
+    <li>明定只處理新台幣定存，並保留同銀行所有符合條件的方案、多天期與領息選項。</li>
+    <li>保留「需要人工複核」狀態，避免把不確定資料誤列為可承作。</li>
+  </ul>
+
+  <footer>
+    本文件依工作區 README.md 與本次可行性研究整理。未提供任何銀行目前利率、活動或額度數據；未進行實際方案清單產製，也未捏造官方來源。
+  </footer>
+</main>
+</body>
+</html>

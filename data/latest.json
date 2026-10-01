@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "generated_at": null,
+  "timezone": "Asia/Taipei",
+  "data_status": "尚未取得官方資料",
+  "banks": [
+    {
+      "bank": "LINE Bank",
+      "search_status": "尚未搜尋",
+      "last_attempted_at": null,
+      "last_successful_check_at": null,
+      "data_version": null,
+      "plans": [],
+      "notes": ["尚未執行官方網站搜尋；不得視為目前沒有方案。"]
+    },
+    {
+      "bank": "樂天國際銀行",
+      "search_status": "尚未搜尋",
+      "last_attempted_at": null,
+      "last_successful_check_at": null,
+      "data_version": null,
+      "plans": [],
+      "notes": ["尚未執行官方網站搜尋；不得視為目前沒有方案。"]
+    },
+    {
+      "bank": "將來銀行",
+      "search_status": "尚未搜尋",
+      "last_attempted_at": null,
+      "last_successful_check_at": null,
+      "data_version": null,
+      "plans": [],
+      "notes": ["尚未執行官方網站搜尋；不得視為目前沒有方案。"]
+    },
+    {
+      "bank": "王道銀行",
+      "search_status": "尚未搜尋",
+      "last_attempted_at": null,
+      "last_successful_check_at": null,
+      "data_version": null,
+      "plans": [],
+      "notes": ["尚未執行官方網站搜尋；不得視為目前沒有方案。"]
+    },
+    {
+      "bank": "匯豐銀行",
+      "search_status": "尚未搜尋",
+      "last_attempted_at": null,
+      "last_successful_check_at": null,
+      "data_version": null,
+      "plans": [],
+      "notes": ["尚未執行官方網站搜尋；不得視為目前沒有方案。"]
+    }
+  ],
+  "notes": [
+    "目前沒有填入任何利率、天期、額度、活動期間或官方網址。",
+    "欄位資料須由官方銀行網站或官方文件取得後才能加入。"
+  ]
+}

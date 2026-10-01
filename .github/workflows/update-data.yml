@@ -1,0 +1,53 @@
+name: 更新新台幣定存資料網站
+
+on:
+  schedule:
+    # 08:30 台灣時間（UTC 00:30）；GitHub Actions 排程可能延遲。
+    - cron: "30 0 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "只驗證，不部署 GitHub Pages"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages-update
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 驗證資料與同步靜態站
+        env:
+          PYTHONPATH: src
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
+            python scripts/run_update.py --source data/latest.json --site site --dry-run
+          else
+            python scripts/run_update.py --source data/latest.json --site site
+          fi
+      - name: 設定 GitHub Pages
+        if: "${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}"
+        uses: actions/configure-pages@v5
+      - name: 建立 Pages artifact
+        if: "${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}"
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: 部署 GitHub Pages
+        if: "${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}"
+        id: deployment
+        uses: actions/deploy-pages@v4
